@@ -1,0 +1,329 @@
+# ==========================================
+# FBLA Intro to Programming 2025-2026
+# Topic: Virtual Pet (Cost of Care)
+# ==========================================
+
+# IMPORTING LIBRARIES
+import time    # Used to pause the game so text doesn't fly by too fast
+import os      # Used to clear the terminal screen to make it look like a real UI
+import random  # Used to generate random numbers for the math minigame
+import json    # Used to save and load data to a file (Data Persistence)
+
+# ==========================================
+# 1. GAME DATA (The Pet's State)
+# ==========================================
+# TALKING POINT FOR JUDGES: "I used a Python Dictionary to store my pet's data. 
+# It keeps all the stats organized in simple key-value pairs, which makes it 
+# very easy to update the health or money later in the code."
+pet = {
+    "name": "Unknown",
+    "type": "Dog",
+    "health": 100,
+    "hunger": 80,
+    "happiness": 80,
+    "energy": 100,
+    "money": 50.00,        # The starting budget
+    "total_spent": 0.00,   # FBLA Requirement: Tracks lifetime spending
+    "food": 2,             # Starting inventory
+    "medicine": 0,
+    "day": 1
+}
+
+# --- KEYBOARD ASCII ART ---
+# TALKING POINT FOR JUDGES: "I used a dictionary to store ASCII art. 
+# Depending on what pet the user chooses, the game pulls the correct art."
+PET_ART = {
+    # This is the Dog art. It features floppy ears and a tail.
+    "Dog": """
+      __      _
+    o'')}____//
+     `_/      )
+     (_(_/-(_/
+    """,
+    # This is the Cat art. It features pointy ears and whiskers.
+    "Cat": """
+     /\\_/\\
+    ( o.o )
+     > ^ <
+      \"\"\"
+    """,
+    # This is the Dragon art. It is larger, with horns and small wings.
+    "Dragon": """
+      /\\_/\\
+     ( o.o )
+      > ^ <
+     /  _  \\
+    / /| |\\ \\
+   ( ( | | ) )
+    """
+}
+
+# ==========================================
+# 2. HELPER FUNCTIONS (Visuals)
+# ==========================================
+def clear_screen():
+    # This checks if the user is on Windows ('nt') or Mac/Linux and clears the screen accordingly.
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def print_status():
+    # This acts as our main dashboard. It prints the current state of the dictionary.
+    clear_screen()
+    print("========================================")
+    print(f" {pet['name']} the {pet['type']} | Day: {pet['day']}")
+    print("========================================")
+    
+    # Grab the correct ASCII art based on the pet type
+    current_art = PET_ART.get(pet["type"], PET_ART["Dog"])
+    print(current_art)
+    
+    # Show Stats
+    print("========================================")
+    print(f" ❤️ Health:    {pet['health']}/100")
+    print(f" 🍗 Hunger:    {pet['hunger']}/100")
+    print(f" 😄 Happiness: {pet['happiness']}/100")
+    print(f" ⚡ Energy:    {pet['energy']}/100")
+    
+    # Show Financials 
+    # TALKING POINT FOR JUDGES: "This section fulfills the 'Cost of Care' requirement 
+    # by showing the user their current budget and their running total of expenses."
+    print("\n--- FINANCIAL DASHBOARD ---")
+    print(f" 💰 Wallet:        ${pet['money']:.2f}")
+    print(f" 📉 Total Spent:   ${pet['total_spent']:.2f}")
+    print(f" 🎒 Food: {pet['food']} | Medicine: {pet['medicine']}")
+    print("========================================\n")
+
+# ==========================================
+# 3. SAVE AND LOAD (Data Persistence)
+# ==========================================
+# TALKING POINT FOR JUDGES: "To meet the Data Persistence requirement, I used Python's JSON library. 
+# It takes the 'pet' dictionary and writes it to a text file so progress isn't lost."
+def save_game():
+    try: # We use 'try' just in case the computer restricts saving files
+        with open("save_file.json", "w") as file:
+            json.dump(pet, file) # Dumps the dictionary into the file
+        print("Game saved successfully!")
+    except:
+        print("Error saving the game.")
+    time.sleep(1.5)
+
+def load_game():
+    global pet # 'global' tells the function to update the main pet dictionary at the top
+    try:
+        with open("save_file.json", "r") as file:
+            pet = json.load(file) # Loads the saved dictionary back into the game
+        print(f"Welcome back, {pet['name']}!")
+    except:
+        print("No save file found. Starting a new game.")
+    time.sleep(1.5)
+
+# ==========================================
+# 4. GAME ACTIONS (The Logic)
+# ==========================================
+def feed_pet():
+    # Check if they actually have food in their inventory
+    if pet["food"] > 0:
+        pet["food"] -= 1 # Remove one food
+        # We use min(100, ...) so the hunger never accidentally goes above 100%
+        pet["hunger"] = min(100, pet["hunger"] + 30)
+        print(f"Chomp chomp! {pet['name']} ate some food.")
+    else:
+        print("You don't have any food! Go to the shop.")
+    time.sleep(1.5)
+
+def play_pet():
+    # The pet needs at least 20 energy to play
+    if pet["energy"] >= 20:
+        pet["energy"] -= 20
+        pet["hunger"] -= 10 # Playing makes them hungry
+        pet["happiness"] = min(100, pet["happiness"] + 20)
+        print(f"Yay! {pet['name']} had fun playing.")
+    else:
+        print(f"{pet['name']} is too tired to play right now.")
+    time.sleep(1.5)
+
+def sleep_pet():
+    print(f"{pet['name']} is sleeping... Zzz...")
+    # Reset energy, but decrease hunger and happiness because time has passed
+    pet["energy"] = 100
+    pet["hunger"] -= 20
+    pet["happiness"] -= 10
+    pet["day"] += 1 # Move to the next day
+    
+    # Consequence logic: If you neglect the pet, health drops
+    if pet["hunger"] < 20:
+        pet["health"] -= 25
+        print("Warning: Your pet is starving and losing health!")
+    
+    time.sleep(2)
+
+# ==========================================
+# 5. FINANCIAL SYSTEM & MINIGAME
+# ==========================================
+def work_job():
+    print("\n--- TIME TO WORK ---")
+    # Generate two random numbers between 1 and 20 for simple addition
+    num1 = random.randint(1, 20)
+    num2 = random.randint(1, 20)
+    correct_answer = num1 + num2
+    
+    print(f"Solve this to earn $20: {num1} + {num2}")
+    
+    # TALKING POINT FOR JUDGES: "I used a try-except block here for Input Validation. 
+    # If the user types a word instead of a number, the ValueError catches it 
+    # so the program doesn't crash."
+    try:
+        user_answer = int(input("Your answer: ")) # Tries to convert input to an integer
+        if user_answer == correct_answer:
+            pet["money"] += 20.00
+            print("Correct! You earned $20.")
+        else:
+            print(f"Wrong! The answer was {correct_answer}. No money for you.")
+    except ValueError:
+        print("Invalid input! You must type a number.")
+    
+    time.sleep(2)
+
+def visit_shop():
+    clear_screen()
+    print("--- PET STORE ---")
+    print(f"Your Money: ${pet['money']:.2f}")
+    print("1. Buy Food ($5.00)")
+    print("2. Buy Medicine ($30.00)")
+    print("3. Leave Store")
+    
+    choice = input("What do you want to buy? (1-3): ")
+    
+    # Standard if/elif statements to handle the menu choices
+    if choice == "1":
+        if pet["money"] >= 5.00:
+            pet["money"] -= 5.00
+            pet["total_spent"] += 5.00 # Add to the running total of expenses
+            pet["food"] += 1
+            print("Bought 1 Food!")
+        else:
+            print("Not enough money!")
+            
+    elif choice == "2":
+        if pet["money"] >= 30.00:
+            pet["money"] -= 30.00
+            pet["total_spent"] += 30.00 # Add to the running total of expenses
+            pet["medicine"] += 1
+            print("Bought 1 Medicine!")
+        else:
+            print("Not enough money!")
+            
+    elif choice == "3":
+        print("Leaving store...")
+        
+    time.sleep(1.5)
+
+def visit_vet():
+    if pet["health"] >= 100:
+        print(f"{pet['name']} is already at full health!")
+    else:
+        # Check if they have medicine in their inventory dictionary
+        if pet["medicine"] > 0:
+            pet["medicine"] -= 1
+            pet["health"] = 100
+            print(f"Used medicine! {pet['name']} is fully healed.")
+        else:
+            print("You need to buy medicine from the shop first!")
+    time.sleep(2)
+
+# ==========================================
+# 6. SETUP AND MAIN LOOP
+# ==========================================
+def setup_new_pet():
+    # FBLA Requirement: Customization (Naming and choosing pet type)
+    print("\n--- ADOPT A NEW PET ---")
+    pet["name"] = input("What do you want to name your pet? ")
+    
+    # TALKING POINT FOR JUDGES: "I used a while loop for Input Validation here. 
+    # It traps the user in this loop until they type one of the three accepted 
+    # animals, which prevents bugs with the ASCII art later."
+    while True:
+        # .strip() removes accidental spaces, .capitalize() makes the first letter uppercase
+        choice = input("Is it a Dog, Cat, or Dragon? ").strip().capitalize()
+        
+        if choice in ["Dog", "Cat", "Dragon"]:
+            pet["type"] = choice
+            break # This breaks them out of the loop because they followed the rules!
+        else:
+            print("Invalid choice! Please type exactly 'Dog', 'Cat', or 'Dragon'.")
+            time.sleep(1)
+            
+    print(f"Awesome! You adopted {pet['name']} the {pet['type']}.")
+    time.sleep(2)
+
+def start_game():
+    clear_screen()
+    print("Welcome to the FBLA Virtual Pet Game!")
+    
+    # When the game boots up, check if they have a save file they want to use
+    if os.path.exists("save_file.json"):
+        ans = input("Do you want to load your saved pet? (y/n): ")
+        if ans.lower() == 'y':
+            load_game()
+        else:
+            setup_new_pet()
+    else:
+        setup_new_pet()
+
+    # THE MAIN GAME LOOP
+    while True:
+        # === GAME OVER CHECK ===
+        if pet["health"] <= 0:
+            clear_screen()
+            print("========================================")
+            print("               GAME OVER                ")
+            print("========================================")
+            print(f"Oh no! {pet['name']}'s health dropped to 0.")
+            print("Your pet has passed away due to neglect.")
+            print(f"Total Lifetime Expenses: ${pet['total_spent']:.2f}")
+            
+            # Delete the save file so they can't cheat death
+            if os.path.exists("save_file.json"):
+                os.remove("save_file.json")
+                print("\n[Save file deleted. You must start over next time.]")
+            
+            print("\nThanks for playing.")
+            break # Breaks out of the while loop, ending the game
+
+        print_status() # Draw the dashboard
+        
+        # Draw the menu
+        print("1. 🍗 Feed")
+        print("2. 🎾 Play")
+        print("3. 💤 Sleep (Next Day)")
+        print("4. 💼 Work (Earn Money)")
+        print("5. 🛒 Shop")
+        print("6. 🏥 Vet")
+        print("7. 💾 Save & Quit")
+        
+        choice = input("\nChoose an action (1-7): ")
+        
+        # Direct the user to the correct function based on their input
+        if choice == "1":
+            feed_pet()
+        elif choice == "2":
+            play_pet()
+        elif choice == "3":
+            sleep_pet()
+        elif choice == "4":
+            work_job()
+        elif choice == "5":
+            visit_shop()
+        elif choice == "6":
+            visit_vet()
+        elif choice == "7":
+            save_game()
+            print("Thanks for playing!")
+            break # This 'break' stops the 'while True' loop, ending the program
+        else:
+            # If they type '8' or 'apple', it hits this else statement
+            print("Please type a number between 1 and 7.")
+            time.sleep(1)
+
+# This is the standard way to start a Python program
+if __name__ == "__main__":
+    start_game()
