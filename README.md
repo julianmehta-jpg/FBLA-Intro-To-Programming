@@ -7,7 +7,8 @@ This project was built for the FBLA Introduction to Programming event (2025-2026
 * **Customization:** Choose your pet's name and species. The game features custom keyboard ASCII art for the Dog, Cat, and Dragon.
 * **Input Validation (Error Handling):** The program uses `while` loops to ensure users can only type "Dog", "Cat", or "Dragon" during setup, and `try-except` blocks to prevent crashes if a user types letters during the math minigame.
 * **Needs Management:** You must balance your pet's Health, Hunger, Happiness, and Energy.
-* **Financial Economy:** Work a job (solving 1-20 addition problems) to earn money. Visit the shop to buy food and medicine.
+* **Financial Economy:** Work a job (solving 1-30 addition problems) to earn money (30 dollars). You can use this money at the shop to buy food and medicine.
+* **Healing Your Pet:** To go to the vet you must go to the shop first and spend 30 dollars for medicine.
 * **Cost Tracking:** The game calculates and tracks your total lifetime expenses to show the true cost of caring for a pet.
 * **Consequences & Game Over:** If you do not feed your pet, its health will drop overnight. If health reaches 0, it is Game Over and your save file is deleted!
 * **Data Persistence:** You can save your progress and load it the next time you open the game.
