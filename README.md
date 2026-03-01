@@ -1,25 +1,34 @@
-# FBLA Virtual Pet: Cost of Care Edition
+=======================================================
+FBLA Introduction to Programming 2025-2026
+Topic: Virtual Pet Simulator
+=======================================================
 
-## Project Overview
-This project was built for the FBLA Introduction to Programming event (2025-2026). The goal of the program is to simulate the financial responsibility and daily tasks of owning a pet. 
+1. PROGRAM OVERVIEW
+This program is a terminal-based Virtual Pet Simulator designed to teach financial responsibility (Cost of Care). Users must balance the health and happiness of their pet with a finite budget, tracking a running total of expenses and striving to reach a savings goal.
 
-## Features Included
-* **Customization:** Choose your pet's name and species. The game features custom keyboard ASCII art for the Dog, Cat, and Dragon.
-* **Input Validation (Error Handling):** The program uses `while` loops to ensure users can only type "Dog", "Cat", or "Dragon" during setup, and `try-except` blocks to prevent crashes if a user types letters during the math minigame.
-* **Needs Management:** You must balance your pet's Health, Hunger, Happiness, and Energy.
-* **Financial Economy:** Work a job (solving 1-30 addition problems) to earn money (30 dollars). You can use this money at the shop to buy food and medicine.
-* **Healing Your Pet:** To go to the vet you must go to the shop first and spend 30 dollars for medicine.
-* **Cost Tracking:** The game calculates and tracks your total lifetime expenses to show the true cost of caring for a pet.
-* **Consequences & Game Over:** If you do not feed your pet, its health will drop overnight. If health reaches 0, it is Game Over and your save file is deleted!
-* **Data Persistence:** You can save your progress and load it the next time you open the game.
+2. HOW TO RUN
+- Ensure Python 3.8+ is installed on your system.
+- Open your terminal or command prompt.
+- Navigate to the directory containing the file.
+- Run the command: `python main.py`
 
-## Requirements
-* Python 3.x or higher installed on your computer.
-* No external or downloaded libraries are required. This script only uses built-in Python libraries (`time`, `os`, `random`, `json`).
+3. FEATURES & GAMEPLAY INSTRUCTIONS
+- Customization: Choose a name and a pet type (Dog, Cat, Dragon).
+- Financial Dashboard: The main screen displays your Current Balance, Lifetime Spend, and a Savings Goal progress tracker.
+- Work/Chores (Option 5): To afford care, you must work. Unscramble FBLA-related business terms to earn wages.
+- Shop (Option 4): Manage your budget by deciding between Basic Food, Premium Food, or Medicine. 
+- Sleep (Option 3): Ends the day. Hunger and Happiness will naturally decay. If hunger drops too low, health will decline.
 
-## How to Run the Game
-1. Open your computer's terminal or command prompt.
-2. Navigate to the folder where this game is saved.
-3. Run the following command:
-   `python main.py`
+4. LIBRARIES & TEMPLATES USED
+This program uses only the standard built-in Python libraries to ensure maximum compatibility across all judging environments:
+- `sys` and `os`: Used for console clearing and I/O flushing.
+- `time`: Used for pacing and animations.
+- `random`: Used for generating chore challenges.
+- `json`: Used for Data Persistence (saving/loading).
+- `typing`: Used for strict code structure and readability.
+
+5. CREDITS
+- Developed for the FBLA 2025-2026 Competitive Season.
+- No external code templates or third-party libraries (e.g., Pygame) were used. All logic, ASCII formatting, and code structures are original.
+
 4. Follow the on-screen prompts by typing the numbers that correspond to your choices!
